@@ -15,10 +15,11 @@ protocol ValidationMainViewControllerDelegate {
 
 class ValidationMainViewController: BaseViewController {
 
-    static func instance() -> ValidationMainViewController {
+    static func instance(withLivenessOnly: Bool) -> ValidationMainViewController {
         let frameworkBundle = Bundle(for: VLensManager.self)
         let storyboard = UIStoryboard(name: "Validation", bundle: frameworkBundle)
         let viewController = storyboard.instantiateViewController(withIdentifier: ValidationMainViewController.stringRepresentation) as! ValidationMainViewController
+        viewController.viewModel.withLivenessOnly = withLivenessOnly
         return viewController
     }
     
@@ -43,24 +44,26 @@ class ValidationMainViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        viewModel.initData()
+        
         initViews()
         bind()
     }
     
     private func initViews() {
-        frontNationalIdValidationViewController.viewModel = viewModel.stepsViewModels[0] as? FrontNationalIdValidationViewModel
+//        frontNationalIdValidationViewController.viewModel = viewModel.stepsViewModels[0] as? FrontNationalIdValidationViewModel
         frontNationalIdValidationViewController.stepsDelegate = self
         
-        backNationalIdValidationViewController.viewModel = viewModel.stepsViewModels[1] as? BackNationalIdValidationViewModel
+//        backNationalIdValidationViewController.viewModel = viewModel.stepsViewModels[1] as? BackNationalIdValidationViewModel
         backNationalIdValidationViewController.stepsDelegate = self
         
-        face1ValidationViewController.viewModel = viewModel.stepsViewModels[2] as? FaceValidationViewModel
+//        face1ValidationViewController.viewModel = viewModel.stepsViewModels[2] as? FaceValidationViewModel
         face1ValidationViewController.stepsDelegate = self
         
-        face2ValidationViewController.viewModel = viewModel.stepsViewModels[3] as? FaceValidationViewModel
+//        face2ValidationViewController.viewModel = viewModel.stepsViewModels[3] as? FaceValidationViewModel
         face2ValidationViewController.stepsDelegate = self
         
-        face3ValidationViewController.viewModel = viewModel.stepsViewModels[4] as? FaceValidationViewModel
+//        face3ValidationViewController.viewModel = viewModel.stepsViewModels[4] as? FaceValidationViewModel
         face3ValidationViewController.stepsDelegate = self
                 
         initViewsForStep()
@@ -100,17 +103,22 @@ class ValidationMainViewController: BaseViewController {
         
         switch stepItemViewModel {
         case is FrontNationalIdValidationViewModel:
+            frontNationalIdValidationViewController.viewModel = stepItemViewModel as? FrontNationalIdValidationViewModel
             switchToViewController(frontNationalIdValidationViewController)
         case is BackNationalIdValidationViewModel:
+            backNationalIdValidationViewController.viewModel = stepItemViewModel as? BackNationalIdValidationViewModel
             switchToViewController(backNationalIdValidationViewController)
         case is FaceValidationViewModel:
-            if (viewModel.currentStepIndex == 2) {
+            if (viewModel.currentStepIndex == viewModel.face1ViewModel?.getStepIndex()) {
+                face1ValidationViewController.viewModel = stepItemViewModel as? FaceValidationViewModel
                 switchToViewController(face1ValidationViewController)
 
-            } else if (viewModel.currentStepIndex == 3) {
+            } else if (viewModel.currentStepIndex == viewModel.face2ViewModel?.getStepIndex()) {
+                face2ValidationViewController.viewModel = stepItemViewModel as? FaceValidationViewModel
                 switchToViewController(face2ValidationViewController)
 
-            } else if (viewModel.currentStepIndex == 4) {
+            } else if (viewModel.currentStepIndex == viewModel.face3ViewModel?.getStepIndex()) {
+                face3ValidationViewController.viewModel = stepItemViewModel as? FaceValidationViewModel
                 switchToViewController(face3ValidationViewController)
             }
             

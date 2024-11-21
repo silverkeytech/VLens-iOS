@@ -24,7 +24,7 @@ class AppNetworkManager {
         
         let delegate = Session.default.delegate
 
-        var certificates = [SecCertificate]()
+        let certificates = [SecCertificate]()
                 
 //        TODO: Add your certificate here
 //        if let url = Bundle.main.url(forResource: "*.vlenseg.com", withExtension: "cer"){

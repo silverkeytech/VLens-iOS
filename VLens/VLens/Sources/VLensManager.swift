@@ -10,7 +10,8 @@ import UIKit
 // MARK: - VLens Entry Point Class
 public class VLensManager {
     
-    public init(apiKey: String, secretKey: String, tenancyName: String, language: String = "en") {
+    public init(transactionId: String, apiKey: String, secretKey: String, tenancyName: String, language: String = "en") {
+        CachedData.shared.transactionId = transactionId
         CachedData.shared.apiKey        = apiKey
         CachedData.shared.secretKey     = secretKey
         CachedData.shared.tenancyName   = tenancyName
@@ -28,12 +29,11 @@ public class VLensManager {
         CachedData.shared.accessToken = accessToken
     }
     
-    public func present(on viewController: UIViewController) {
+    public func present(on viewController: UIViewController, withLivenessOnly: Bool = false) {
         debugPrint("Vlens presented :D")
         
-        CachedData.shared.transactionId = UUID().uuidString
         
-        let validationViewController = ValidationMainViewController.instance()
+        let validationViewController = ValidationMainViewController.instance(withLivenessOnly: withLivenessOnly)
         validationViewController.delegate = delegate
         validationViewController.modalPresentationStyle = .fullScreen
         viewController.present(validationViewController, animated: true)
